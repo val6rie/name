@@ -1,86 +1,187 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <map>
 using namespace std;
 
-void result(int total)
-{
-    string a1,a2,a3;
-    int n,r=0;
-    ifstream fin("Output.txt");
-    fin>>n;
-    string spop;
-    map<string,int> pop;
-    int amount = (total-43)/3;
-    cout<<"Pet_name: ";for(int i = 0; i < amount;i++)cout<<" ";
-    cout<<"favourite_tv_series: ";for(int i = 0; i < amount;i++)cout<<" ";
-    cout<<"street_name:\n";
-    for(int i = 0;i<n*3;)
-    {
-    fin>>a1>>a2>>a3;
-    pop[a3]++;
-    //cout<<"amount = "<<amount<<endl;
-    //cout<<"a1.length() = "<<a1.length()<<endl;
-    if(9+amount>=a1.length())
-    {
-        cout<<a1;
-        for(int i = 0; i <= 9+amount-a1.length();i++)cout<<" ";
+void chang(int num_of_asks) {
+    ofstream fout("answers.txt");
+    ifstream fin("asks.txt");
+    ofstream faout("asks.txt");
+    string s;
+    int i = 1, nu, kof = 0;
+    vector<string> quest;
+    while (getline(fin, s)) {
+        if (kof == 0) {
+            kof++;
+        }
+        else {
+            cout << i << '.' << s << endl;
+            quest.push_back(s);
+            i++;
+        }
     }
-    else cout<<a1.substr(0,6+amount)<<"... ";
-    if(20+amount>=a2.length())
-    {
-        cout<<a2;
-        for(int i = 0; i <= amount-a2.length()+20;i++)cout<<" ";
+    cout << "Your goal:\n" << "1.Change the question\n2.Delete the question\n3.Add the question\n(enter the num of the desired option)\n";
+    cin >> nu;
+    if (nu == 1) {
+        int chan;
+        cout << "Enter the num of question:\n";
+        cin >> chan;
+        cout << "Print the question (in format " << chan << ". question):\n";
+        string j;
+        cin >> j;
+        getline(cin, s);
+        // cout << s << endl;
+        // cout << quest[chan - 1];
+        quest[chan - 1] = s.substr(1, s.length());
     }
-    else cout<<a2.substr(0,17+amount)<<"... ";
-    if(12+amount>=a3.length())
-    {
-        cout<<a3;
-        for(int i = 0; i <= amount-a3.length()+12;i++)cout<<" ";
+    else if (nu == 2) {
+        int del;
+        cout << "Enter the num of question:\n";
+        cin >> del;
+        quest.erase(quest.begin() + del - 1);
+        // cout << quest[del - 1];
     }
-    else cout<<a3.substr(0,9+amount)<<"...";
-    cout<<endl;
-    i+=3;
-    }
-    for (auto [first, second] : pop)
-    {
-    if(second>r){r=second;spop=first;}
-    }
-    cout<<"The most popular answer for the third question is *"<<spop<<"*"<<endl;
+    else if (nu == 3) {
+        cout << "Print the question (in format " << quest.size() + 1 << ". question):\n";
+        string j;
+        cin >> j;
+        getline(cin, s);
+        quest.push_back(s.substr(1, s.length()));
 
-}
-int main()
-{
-    cout<<"Do you want to enter your answers or to get the previous Data? (1 or 2)?\n";
-    int main_root;
-    cin>>main_root;
-    if(main_root==1){
-    ifstream fin("Output.txt");
-    ifstream finq("questions.txt");
-    int n;
-    fin>>n;
-    vector<string> ss(n*3);
-    for(int i = 0;i<n*3;i++)fin>>ss[i];
-    n++;
-    fin.close();
-    ofstream fout("Output.txt");
-    string q1, q2, q3, a1, a2, a3;
-    finq>>q1>>q2>>q3;
-    cout<<"Enter your "<<q1<<", "<<q2<<", "<<q3<<endl;
-    cin>>a1>>a2>>a3;
-    fout<<n<<" ";
-    for(int i = 0;i<(n-1)*3;i++){fout<<ss[i]<<" ";if(i%3==0&&i!=0)fout<<endl;}
-    fout<<a1<<" "<<a2<<" "<<a3<<endl;
-    fout.close();
     }
-    else if(main_root==2)
-    {
-        cout<<"Enter width of the table you want to see (min is 43):\n";
-        int total;cin>>total;
-            result(total);
+
+    faout << quest.size() << endl;
+    for (int f = 0; f < quest.size(); f++) {
+        faout << quest[f] << endl;
     }
-    else cout<<"-_-";
-    return 0;
+
+    fout << 0;
 }
 
+
+void outp(int num_of_asks, int weii) {
+    string s, as, popul;
+    int num_of_pe, num_of_ask, i = 0, ia = 0, maxp = 0;
+    ifstream fin("answers.txt");
+    ifstream fain("asks.txt");
+    vector<string> pops;
+    fain >> num_of_asks;
+
+    while (getline(fain, as)) {
+        if (ia == 0) {
+            ia++;
+        }
+        else {
+            if (weii > as.length()) {
+                cout << as.substr(0, as.length() - 1) << ' ';
+                for (int p = 0; p < weii - as.length(); p++) {
+                    cout << " ";
+                }
+            }
+            else {
+                cout << as.substr(0, weii - 4) << "... ";
+            }
+
+        }
+    }
+
+    cout << endl;
+    fin >> num_of_pe;
+
+
+    while (getline(fin, s)) {
+        if (i % num_of_asks == 0 and i != 0) {
+            if (weii > s.length()) {
+                cout << s.substr(0, s.length() - 1) << ' ';
+                for (int p = 0; p < weii - s.length(); p++) {
+                    cout << " ";
+                }
+                cout << endl;
+            }
+            else {
+                cout << s.substr(0, weii - 4) << "..." << endl;
+            }
+            pops.push_back(s);
+            i = -1;
+        }
+        else if (i != 0) {
+            if (weii > s.length()) {
+                cout << s.substr(0, s.length() - 1) << ' ';
+                for (int p = 0; p < weii - s.length(); p++) {
+                    cout << " ";
+                }
+            }
+            else {
+                cout << s.substr(0, weii - 4) << "... ";
+            }
+        }
+        i++;
+    }
+
+
+
+    for (int j = 0; j < num_of_pe; j++) {
+        int nowp = 0;
+        string nowl = pops[j];
+        for (int r = 0; r < num_of_pe; r++) {
+            if (nowl == pops[r]) {
+                nowp++;
+            }
+        }
+        if (nowp > maxp) {
+            maxp = nowp;
+            popul = nowl;
+        }
+    }
+
+    cout << endl << "statistic:" << endl << "the survey was conducted by " << num_of_pe << " people" << endl;
+    cout << "the most popular answer to the last question is: " << popul << endl;
+}
+
+
+
+
+
+int main() {
+    int num, num_of_asks, num_of_pe;
+    string  ans, as, s;
+    ifstream fin("asks.txt");
+    fin >> num_of_asks;
+    cout << "Your goal:" << endl << "1.Conduct a survey" << endl << "2.Output saved results" << endl << "3.Edit test questions" << endl << "(enter the num of the desired option)" << endl;
+    cin >> num;
+
+    if (num == 1) {
+        ifstream fanin("answers.txt");
+        fanin >> num_of_pe;
+        vector<string> aaas;
+
+
+        while (getline(fanin, as)) {
+            aaas.push_back(as);
+        }
+
+        ofstream fout("answers.txt");
+        int line = 0;
+        while (getline(fin, s)) {
+            cout << s << endl;
+            getline(cin, ans);
+            aaas.push_back(ans);
+
+        }
+        num_of_pe++;
+        fout << num_of_pe;
+        for (int i = 0; i < aaas.size(); i++) {
+            fout << aaas[i] << endl;
+
+        }
+    }
+    else if (num == 2) {
+        cout << "Enter the weigth of the desired table (at least " << num_of_asks * 6 << "): ";
+        int wei;
+        cin >> wei;
+        outp(num_of_asks, wei / num_of_asks);
+    }
+    else if (num == 3) {
+        chang(num_of_asks);
+    }
+}
